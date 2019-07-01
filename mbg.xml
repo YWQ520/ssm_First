@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+	<!-- context用于指定生成一组对象的环境  可以配置多个-->
+  <context id="DB2Tables" targetRuntime="MyBatis3">
+  
+  	<!-- jdbcConnection元素用于指定内省表所需的数据库连接的属性。
+  		MyBatis Generator使用JDBC的DatabaseMetaData类来发现您在配置中指定的表的属性。
+  		每个<context>元素都需要一个<connectionFactory>或<jdbcConnection>元素。 -->
+    <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+        connectionURL="jdbc:mysql:///school"
+        userId="root"
+        password="123456">
+    </jdbcConnection>
+
+	<!-- 此属性用于指定MyBatis生成器是否应该强制使用java.math。
+		用于十进制和数值字段，而不是在可能的情况下替换整数类型。属性支持以下值: 默认false   true-->
+    <javaTypeResolver >
+      <property name="forceBigDecimals" value="false" />
+    </javaTypeResolver>
+
+	<!-- 指定javabean生成的路径 -->
+    <javaModelGenerator targetPackage="com.ssm_top1.pojo" targetProject="./src/main/java">
+    	<!--enableSubPackages 此属性用于选择MBG是否会根据自检表的目录和模式为对象生成不同的Java包。
+    		例如，假设模式MYSCHMA中的一个表MYTABLE。还假设targetPackage属性被设置为“com.mycompany”。
+    		如果此属性为真，则为表生成的DAO接口和类将放在“com.mycompany.myschema”包中。
+    		如果属性为false，则生成的SQL映射将放在“com”中。mycompany”模式。	
+    	 -->
+      <property name="enableSubPackages" value="true" />
+      <property name="trimStrings" value="true" />
+    </javaModelGenerator>
+	
+	<!-- 指定xml映射文件指定生成路径 -->
+    <sqlMapGenerator targetPackage="com.ssm_top1.mapper"  targetProject="./src/main/resources">
+      <property name="enableSubPackages" value="true" />
+    </sqlMapGenerator>
+
+	<!-- 指定接口生成的路径 -->
+    <javaClientGenerator type="XMLMAPPER" targetPackage="com.ssm_top1.mapper"  targetProject="./src/main/java">
+      <property name="enableSubPackages" value="true" />
+    </javaClientGenerator>
+
+	<!-- 指定要逆向分析那些表 -->
+	<table tableName="subjects" domainObjectName="Subjects"/>
+	<table tableName="grade" domainObjectName="Grade"/>
+  </context>
+</generatorConfiguration>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- 扫描注解 mvc控制器注解不扫 -->
+	<context:component-scan base-package="com.ssm_top1">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+	
+	<!-- 加载数据源配置文件 -->
+	<context:property-placeholder location="classpath:mybatis/database.properties"/>
+	
+	<!-- 配置c3p0数据源 -->
+	<bean id="pooledDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+		<property name="driverClass" value="${mysql.driver}"/>
+		<property name="jdbcUrl" value="${mysql.url}"/>
+		<property name="user" value="${mysql.username}"/>
+		<property name="password" value="${mysql.password}"/>
+	</bean>
+	
+	<!-- 加载mybatis配置文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="pooledDataSource"/>
+		<property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+	</bean>
+	
+	<!-- mapper扫描器 -->
+	<!-- <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.ssm_top1.mapper"/>
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean> -->
+	<mybatis-spring:scan base-package="com.ssm_top1.mapper"/>
+	
+	<!-- 配置事物管理器 -->
+	<bean id="dataSourceTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<!-- 自定数据源交给spring管理 -->
+		<property name="dataSource" ref="pooledDataSource"/>
+	</bean>
+	
+	<!-- 开启基于注解的事物 -->
+	<tx:annotation-driven transaction-manager="dataSourceTransactionManager"/>
+
+</beans>
